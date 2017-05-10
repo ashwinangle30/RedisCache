@@ -10,6 +10,20 @@ var users = require('./routes/users');
 
 var app = express();
 
+var responseTime = require('response-time');
+var axios = require('axios');
+var redis = require('redis');
+
+// create a new redis client and connect to our local redis instance
+var client = redis.createClient();
+
+// if an error occurs, print it to the console
+client.on('error', function (err) {
+    console.log("Error " + err);
+});
+
+app.use(responseTime());
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
