@@ -7,22 +7,18 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var db = require('./api/db');
 
 var app = express();
 
-var responseTime = require('response-time');
-var axios = require('axios');
-var redis = require('redis');
+var mongoose = require('mongoose');
+var mongourl = 'mongodb://cmpe280:cmpe280#@ds137281.mlab.com:37281/cmpe_280';
+mongoose.Promise = global.Promise;
 
-// create a new redis client and connect to our local redis instance
-var client = redis.createClient();
-
-// if an error occurs, print it to the console
-client.on('error', function (err) {
-    console.log("Error " + err);
+mongoose.connect(mongourl, function(err) {
+    if (err) throw err;
+    console.log("Successfully Connected to cloud mongodb");
 });
-
-app.use(responseTime());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,8 +31,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/bower_components' ,express.static(path.join(__dirname, 'bower_components')));
 
 app.use('/', index);
+app.use('/api/images', db);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
