@@ -1,7 +1,7 @@
 
 
 # RedisCache
-An im-memory data strcuture store that can be used as a database and a cache.
+An in-memory data strcuture store that can be used as a database and a cache.
 
 ## Usage
 
