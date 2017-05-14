@@ -5,8 +5,11 @@ var Image = require('../schema/imageModel');
 var User = require('../schema/userModel');
 var redis = require('redis');
 var client = redis.createClient();
+const util = require('util');
+const DataURI = require('datauri');
+const datauri = new DataURI();
 
-var imgPath = '/path/to/some/img.png';
+var imgPath = '../public/images/sparta_image.jpg';
 
 //INSERT IMAGE
 router.post('/insertImg', function(req, res, next) {
@@ -15,8 +18,9 @@ router.post('/insertImg', function(req, res, next) {
 	//store an image in binary in mongo
 	var imageInstance = new Image();
 
-	imageInstance.img.data = fs.readFileSync(imgPath);
-	imageInstance.img.contentType = 'image/png';
+	const buffer = fs.readFileSync(imgPath);
+	datauri.format('.jpg', buffer);
+	imageInstance.img.dataUri = datauri.content;
 
 	imageInstance.save(function (err) {
 		if (err) {
@@ -25,6 +29,38 @@ router.post('/insertImg', function(req, res, next) {
 			res.send("success");
 		}
 	});
+});
+
+
+//GET IMAGE
+router.get('/getImg', function(req, res, next) {
+	console.log("/getImg");
+	
+	console.log("req.query.id:: "+req.query.id);
+	client.exists('imagedetail'+req.query.id, function(err, reply) {
+		console.log("Redis query returned with value:"+reply);
+
+		if (reply === 1) {
+			console.log("IN IF");
+			console.log('redis cache exists');
+			
+			client.hgetall('imagedetail'+req.query.id, function(err, object) {
+				var doc = JSON.parse(object.result);
+		        res.status(200).send(doc.img.dataUri);
+			});
+
+		} else {
+			console.log("IN ELSE");
+			
+			Image.find({"img_id": req.query.id}, function (err, document) {
+				client.hmset('imagedetail'+req.query.id, {"result":JSON.stringify(document[0])});
+				client.expire('imagedetail'+req.query.id, 10);
+		        res.status(200).send(document[0].img.dataUri);
+		    });
+			
+		}
+	});
+	
 });
 
 //INSERT USER
@@ -81,13 +117,6 @@ router.get('/getUser', function(req, res, next) {
 	});
 
 });
-
-
-
-
-
-
-
 
 
 module.exports = router;

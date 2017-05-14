@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css'/>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/javascripts/imagefetch.js"></script>
   </head>
   <body>
     <div class="main">
@@ -17,17 +19,20 @@
     		<div class="col-md-4">
     			<div class="row">
     				<div class="col-md-12 btn_div" >
-    					<input type="button" class="btn" value="Image SJSU">
+    					<input type="button" class="btn" value="Image SJSU" id="0">
     				</div>
     				<div class="col-md-12 btn_div">
-    					<input type="button" class="btn" value="Image CMPE Building">
+    					<input type="button" class="btn" value="Image CMPE Building" id="1">
     				</div>
     				<div class="col-md-12 btn_div">
-    					<input type="button" class="btn" value="Image Dr. Martin Luther King Jr. Library">
+    					<input type="button" class="btn" value="Image Dr. Martin Luther King Jr. Library" id="2">
     				</div>
     			</div>
     		</div>
-    		<div class="col-md-8" style="border: 1px solid; height: 500px;width: 850px">
+    		<div class="col-md-8" style="height: 500px;width: 850px">
+    			<div style="margin-top:20px;margin-left:100px">
+    				<img id="result" src="" width="450px" height="450px"/>
+    			</div>
     		</div>
     	</div>
     </div>
