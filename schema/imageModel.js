@@ -8,8 +8,7 @@ autoIncrement.initialize(connection);
 var imgSchema = new mongoose.Schema({
 	img_id: {type: Number, unique: true},
 	img: { 
-		data: Buffer, 
-		contentType: String 
+		dataUri: String 
 	}
 });
 
